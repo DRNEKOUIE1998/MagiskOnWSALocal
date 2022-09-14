@@ -21,8 +21,6 @@
 # DEBUG=--debug
 # CUSTOM_MAGISK=--magisk-custom
 
-DOWNLOAD_DIR=../download
-
 if [ ! "$BASH_VERSION" ]; then
     echo "Please do not use sh to run this script, just execute it directly" 1>&2
     exit 1
@@ -45,6 +43,7 @@ check_dependencies() {
     command -v resize2fs >/dev/null 2>&1 || NEED_INSTALL+=("e2fsprogs")
     command -v pip >/dev/null 2>&1 || NEED_INSTALL+=("python3-pip")
     command -v aria2c >/dev/null 2>&1 || NEED_INSTALL+=("aria2")
+    command -v 7z > /dev/null 2>&1 || NEED_INSTALL+=("p7zip-full")
 }
 check_dependencies
 declare -A os_pm_install;
@@ -95,7 +94,7 @@ pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || p
 
 winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || {
     cp -r ../wine/.cache/* ~/.cache
-    winetricks -q msxml6 || abort
+    winetricks msxml6 || abort
 }
 
 function Radiolist {
@@ -145,17 +144,13 @@ else
 fi
 
 if (YesNoBox '([title]="Install GApps" [text]="Do you want to install GApps?")'); then
-    if [ -f "$DOWNLOAD_DIR"/MindTheGapps-"$ARCH".zip ]; then
-        GAPPS_BRAND=$(
-            Radiolist '([title]="Which GApps do you want to install?"
-                     [default]="OpenGApps")' \
-                \
-                'OpenGApps' "" 'on' \
-                'MindTheGapps' "" 'off'
-        )
-    else
-        GAPPS_BRAND="OpenGApps"
-    fi
+    GAPPS_BRAND=$(
+        Radiolist '([title]="Which GApps do you want to install?"
+                 [default]="MindTheGapps")' \
+            \
+            'OpenGApps' "" 'off' \
+            'MindTheGapps' "" 'on'
+    )
 else
     GAPPS_BRAND="none"
 fi
