@@ -21,7 +21,6 @@
 import sys
 
 import requests
-import os
 import json
 import re
 from pathlib import Path
@@ -45,7 +44,6 @@ if brand == "OpenGApps":
         j = json.loads(res.content)
         link = {i["name"]: i for i in j["archs"][abi_map[arch]]
                 ["apis"][release]["variants"]}[variant]["zip"]
-        # print(f"JSON={j}", flush=True)
         DATE=j["archs"][abi_map[arch]]["date"]
         print(f"DATE={DATE}", flush=True)
     except Exception:
@@ -69,4 +67,3 @@ with open(download_dir/tempScript, 'a') as f:
         f.writelines(f'  out={brand}-{arch}-{variant}.zip\n')
     elif brand == "MindTheGapps":
         f.writelines(f'  out={brand}-{arch}.zip\n')
-    f.close

@@ -25,7 +25,6 @@ from xml.dom import minidom
 import html
 import warnings
 import re
-import os
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
@@ -81,8 +80,8 @@ for node in doc.getElementsByTagName('SecuredFragment'):
 with open(Path.cwd().parent / "xml/FE3FileUrl.xml", "r") as f:
     file_content = f.read()
 
-if not os.path.exists(download_dir):
-    os.makedirs(download_dir)
+if not download_dir.is_dir():
+    download_dir.mkdir()
 tmpdownlist = open(download_dir/tempScript, 'a')
 for i, v, f in identities:
     if re.match(f"Microsoft\.UI\.Xaml\..*_{arch}_.*\.appx", f):
@@ -113,4 +112,4 @@ for i, v, f in identities:
 tmpdownlist.writelines(f'https://aka.ms/Microsoft.VCLibs.{arch}.14.00.Desktop.appx\n')
 tmpdownlist.writelines(f'  dir={download_dir}\n')
 tmpdownlist.writelines(f'  out=vclibs-{arch}.appx\n')
-tmpdownlist.close
+tmpdownlist.close()
